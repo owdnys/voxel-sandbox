@@ -23,7 +23,7 @@ npm run preview      # 本地预览构建产物
 npm test             # 端到端冒烟测试（需要本机装有 Microsoft Edge）
 ```
 
-## 二、部署（二选一，都是免费域名）
+## 二、部署（两条免费路线，可任选其一，也可同时开）
 
 两份方案用的是同一个 `vite.config.ts`，其中 `base: './'` 已把资源路径改成相对路径，
 因此**同一份构建产物既能跑在根路径，也能跑在仓库子路径**，不需要为不同平台改代码。
@@ -42,14 +42,31 @@ npm test             # 端到端冒烟测试（需要本机装有 Microsoft Edge
 
 ### 方案 B：Cloudflare Pages（`https://<项目名>.pages.dev`，免费域名）
 
-**B-1 连接 Git 仓库自动构建（推荐）**
+**B-1 连接 Git 仓库自动构建（推荐，push 后自动重新部署）**
 
-1. 登录 Cloudflare 控制台 → **Workers & Pages → Create → Pages → Connect to Git**，授权并选中刚才的仓库。
-2. 构建配置填：
-   - Framework preset：`Vite`
-   - Build command：`npm run build`
-   - Build output directory：`dist`
-3. 保存并部署，几十秒后即可用 `https://<项目名>.pages.dev` 访问。之后每次 `git push` 都会自动重新部署。
+1. 打开 Cloudflare 控制台 → **Workers & Pages → Create application → Pages → Connect to Git**，
+   授权 GitHub 并选中刚推上去的仓库。
+2. 在 **Set up builds and deployments** 这一步填：
+
+   | 选项 | 填什么 |
+   | --- | --- |
+   | Project name | `voxel-sandbox`（决定网址 `voxel-sandbox.pages.dev`） |
+   | Production branch | `main` |
+   | Framework preset | `Vite` |
+   | Build command | `npm run build` |
+   | Build output directory | `dist` |
+
+   再展开 **Environment variables (optional)**，加一条：
+
+   | 变量名 | 值 | 为什么 |
+   | --- | --- | --- |
+   | `PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD` | `1` | 不加的话构建时会去下载 Playwright 的浏览器（几百 MB），又慢又容易失败；本游戏构建根本用不到它 |
+   | `NODE_VERSION`（可选） | `22` | 指定 Node 版本，避免撞上过旧的默认版本 |
+
+3. 点 **Save and Deploy**，等构建跑完，用 `https://<项目名>.pages.dev` 访问。
+
+> ⚠️ Cloudflare 的规则：项目**一旦用 Git 集成创建，就不能再改成 Direct Upload 类型**。
+> 所以先想好走哪条：Git 集成＝push 即自动更新；Direct Upload＝每次手动传。
 
 **B-2 不接仓库，直接上传 `dist/`（最省事）**
 
@@ -58,13 +75,17 @@ npm run build
 npx wrangler pages deploy dist --project-name=voxel-sandbox
 ```
 
-或者在 Cloudflare 面板里选 **Pages → Upload assets**，把 `dist` 文件夹整个拖进去。
-这种方式不需要仓库、不需要 CI，改完代码重新 build + 上传即可。
+或者在面板里选 **Pages → Upload assets**，把 `dist` 文件夹整个拖进去。
+这条路不需要 Git 集成，改完代码重新 build + 上传即可。
 
-### 关于「免费域名」
+### 关于「免费域名」和两个平台的关系
 
-`*.github.io` 和 `*.pages.dev` 都是免费二级域名。若后续想用自己的域名，
-两个平台都支持在面板里绑定自定义域名并自动签发 HTTPS 证书，无需改任何代码。
+- 两份方案**可以同时开，互不干扰**：同一个仓库既能有 `github.io` 网址，也能有 `pages.dev` 网址，
+  两个网址都能玩，存档各自独立（`localStorage` 按域名隔离）。
+- 留意一点：如果你走的是 Cloudflare 路线而没在 GitHub 仓库里启用 Pages，
+  那么 push 后 `Deploy to GitHub Pages` 那个工作流会因为「仓库未启用 Pages」而报错（红叉）。
+  去 **Settings → Pages → Source** 选一次 **GitHub Actions** 它就会变绿，顺带多一个免费网址；
+  完全不想用也可以，在 **Settings → Actions** 里把它禁用即可。
 
 ## 三、代码怎么传到 GitHub
 
