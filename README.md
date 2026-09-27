@@ -105,8 +105,10 @@ git remote add origin https://github.com/<你的用户名>/<仓库名>.git
 git push -u origin main
 ```
 
-> 这个目录在交付时已经初始化好本地 git 仓库并完成了首次提交，
-> 你只需要补上 `git remote add origin ...` 再 `git push` 即可。
+> 上传时最容易出错的地方：**一定要把整个文件夹连子目录一起传**。
+> `src/`、`.github/` 这类文件夹一旦漏掉，网站就会白屏或无法自动部署。
+> 用 GitHub Desktop 的 **Add local repository** 最稳妥；用网页拖拽上传时，
+> 要确认上传列表里能看到 `src/` 和 `.github/` 两层文件夹再点提交。
 
 ## 四、目录结构
 
