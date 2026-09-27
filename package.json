@@ -1,0 +1,25 @@
+{
+  "name": "voxel-sandbox",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "alea": "^1.0.1",
+    "lucide": "^0.468.0",
+    "simplex-noise": "^4.0.3",
+    "three": "^0.175.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.175.0",
+    "playwright": "^1.56.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "@types/node": "^22.15.0"
+  }
+}
