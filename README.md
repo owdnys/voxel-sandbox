@@ -11,6 +11,18 @@
 
 ---
 
+## 线上地址（三份，同一套代码）
+
+| 地址 | 托管在哪 | 怎么更新 |
+| --- | --- | --- |
+| https://voxel-sandbox-6dx.pages.dev/ | Cloudflare Pages（账号 `owdnys@outlook.com`，项目 `voxel-sandbox`） | `git push` 后自动构建部署 |
+| https://owdnys.github.io/voxel-sandbox/ | GitHub Pages（Actions） | `git push` 后自动构建部署 |
+| https://game-6aq.pages.dev/ | Cloudflare Pages（账号 `june9178250@outlook.com`，项目 `game`） | 双击桌面「更新网站.bat」，或 `npx wrangler pages deploy dist --project-name=game` |
+
+> ⚠️ Cloudflare 侧的项目**必须**填这两个值：Build command = `npm run build`，Build output directory = `dist`。
+> 留空的话它会把**仓库根目录**整个当网站发布，首页变成开发版 `index.html`（`<script src="/src/main.ts">`），
+> 浏览器执行不了 TypeScript → **白屏**。这是本项目最容易踩的坑。
+
 ## 一、本地跑起来
 
 需要 Node.js 18 以上（推荐 20 / 22）。
